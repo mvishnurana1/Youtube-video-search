@@ -8,6 +8,10 @@ class App extends React.Component {
 
     state = { videos: [], selectedVideo: null };
 
+    componentDidMount = () => {
+        this.onTermSubmit('');
+    }
+
     onTermSubmit = async term => {
         const response = await youtube.get('/search', {
             params: {
@@ -16,8 +20,11 @@ class App extends React.Component {
         });
 
         console.log(response.data.items);
-        this.setState({ videos: response.data.items });
-    }
+        this.setState({
+            videos: response.data.items,
+            selectedVideo: response.data.items[0]
+        });
+    };
 
     onVideoSelect = video => {
         console.log('from the App', video);
@@ -31,12 +38,15 @@ class App extends React.Component {
                 <div className="ui grid">
                     <div className="ui rows">
                         <div className="eleven wide column">
-                            <VideosList onVideoSelect={this.onVideoSelect} videos={this.state.videos} />
+                            <VideoDetail video={this.state.selectedVideo}
+                            />
                         </div>
                         <div className="five wide column">
-                            <VideoDetail video={this.state.selectedVideo} />
+                            <VideosList
+                                onVideoSelect={this.onVideoSelect}
+                                videos={this.state.videos}
+                            />
                         </div>
-
                     </div>
                 </div>
             </div>
